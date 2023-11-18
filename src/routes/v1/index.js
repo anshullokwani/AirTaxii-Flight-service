@@ -3,7 +3,7 @@ const router = express.Router();
 const infoController = require('../../controllers/info-controller');
 const airplaneRoutes = require('./airplane-routes');
 
-router.use('/airplanes', airplaneRoutes);
+router.use('/airplane', airplaneRoutes);
 
 router.get('/info', infoController.info);
 

@@ -4,7 +4,7 @@ const { AirplaneService } = require('../services');
 const { ErrorResponse, SuccessResponse } = require('../utils/common');
 
 /**
- * POST : /airplanes
+ * POST : /airplane/
  * request - body {modelNumber: 'airbus320', capacity: 200}
  */
 async function createAirplane(req, res) {
@@ -24,7 +24,7 @@ async function createAirplane(req, res) {
 }
 
 /**
- * GET : /airplanes/
+ * GET : /airplane/
  */
 async function getAirplanes(req, res) {
     try {
@@ -40,7 +40,7 @@ async function getAirplanes(req, res) {
 }
 
 /**
- * GET : /airplanes/:id
+ * GET : /airplane/:id
  */
 async function getAirplane(req, res) {
     try {
@@ -57,7 +57,7 @@ async function getAirplane(req, res) {
 
 
 /**
- * DELETE : /airplanes/:id
+ * DELETE : /airplane/:id
  */
 async function destroyAirplane(req, res) {
     try {
@@ -75,9 +75,27 @@ async function destroyAirplane(req, res) {
 }
 
 
+/**
+ * PATCH : /airplane/:id
+ */
+async function updateAirplane(req, res) {
+    try {
+        const airplane = await AirplaneService.updateAirplane(req.params.id);
+        SuccessResponse.data = airplane;
+        return res.status(StatusCodes.OK)
+        .json(SuccessResponse);
+    } catch(error) {
+        ErrorResponse.error = error;
+        return res.status(error.statusCode)
+        .json(ErrorResponse)
+    }
+}
+
+
 module.exports = {
     createAirplane,
     getAirplanes,
     getAirplane,
-    destroyAirplane
+    destroyAirplane,
+    updateAirplane
 }
