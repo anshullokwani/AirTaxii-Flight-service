@@ -7,10 +7,10 @@ const { ErrorResponse, SuccessResponse } = require('../utils/common');
  * POST : /airport/
  * request - body 
  *      {
-            name: req.body.name,
-            code: req.body.code,
-            address: req.body.address,
-            cityId: req.body.cityId,
+            name: 'Jaipur International Airport,
+            code: 'JAI',
+            address: 'something',
+            cityId: 2,
         }
  */
 async function createAirport(req, res) {
