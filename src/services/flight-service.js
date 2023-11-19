@@ -1,6 +1,7 @@
 const { FlightRepository } = require('../repositories');
 const { StatusCodes } = require('http-status-codes');
 const AppError = require('../utils/errors/app-error');
+const { Op } = require('sequelize');
 const { compareTime } = require('../utils/helpers/date-time-helpers');
 const flightRepository = new FlightRepository();
 
@@ -28,7 +29,20 @@ async function createFlight(data) {
 }
 
 async function getAllFlights(query) {
+    let sortFilter = [];
+    let customFilter = getCustomFilter(query, sortFilter);
+    try {
+        const flights = FlightRepository.getAllFlights(customFilter, sortFilter);
+        return flights;
+    } catch(error) {
+        throw new AppError("cannot fetch data of flights", StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
+
+function getCustomFilter(query) {
     let customFilter = {};
+    const endingTripTime = " 23:59:59";
     if(query.trips) {
         [departureAirportId, arrivalAirportId] = query.trips.split("-");
         if(arrivalAirportId == departureAirportId) {
@@ -37,13 +51,28 @@ async function getAllFlights(query) {
         customFilter.departureAirportId = departureAirportId;
         customFilter.arrivalAirportId = arrivalAirportId;
     }
-
-    try {
-        const flights = FlightRepository.getAllFlights(customFilter);
-        return flights;
-    } catch(error) {
-        throw new AppError("cannot fetch data of flights", StatusCodes.INTERNAL_SERVER_ERROR);
+    if(query.price) {
+        [minPrice, maxPrice] = query.price.split("-");
+        customFilter.price = {
+            [Op.between]: [minPrice, maxPrice]
+        }
     }
+    if(query.travellers) {
+        customFilter.totalSeats = {
+            [Op.gte]: [query.travellers]
+        }
+    }
+    if(query.tripDate) {
+        customFilter.departureTime = {
+            [Op.between]: [query.tripDate, query.tripDate + endingTripTime]
+        }
+    }
+    if(query.sort) {
+        
+        const params = query.sort.split(",");
+        sortFilter = params.map((param) => param.split("_"));
+    }
+    return customFilter; 
 }
 
 module.exports = {
