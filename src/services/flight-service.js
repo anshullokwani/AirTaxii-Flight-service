@@ -13,8 +13,10 @@ function validateRequest(data) {
 
 async function createFlight(data) {
     try {
-        validateRequest(data);
+        // validateRequest(data);
+        console.log("before-create");
         const flight = await flightRepository.create(data);
+        console.log("after-create");
         return flight;
     } catch(error) {
         if(error.name == 'SequelizeValidationError') {
@@ -24,6 +26,7 @@ async function createFlight(data) {
             });
             throw new AppError(explanation, StatusCodes.BAD_REQUEST);
         }
+        console.log("error-create", error);
         throw new AppError("Cannot create a new Flight object", StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
@@ -32,7 +35,7 @@ async function getAllFlights(query) {
     let sortFilter = [];
     let customFilter = getCustomFilter(query, sortFilter);
     try {
-        const flights = FlightRepository.getAllFlights(customFilter, sortFilter);
+        const flights = flightRepository.getAllFlights(customFilter, sortFilter);
         return flights;
     } catch(error) {
         throw new AppError("cannot fetch data of flights", StatusCodes.INTERNAL_SERVER_ERROR);
@@ -40,7 +43,7 @@ async function getAllFlights(query) {
 }
 
 
-function getCustomFilter(query) {
+function getCustomFilter(query, sortFilter) {
     let customFilter = {};
     const endingTripTime = " 23:59:59";
     if(query.trips) {
@@ -72,6 +75,7 @@ function getCustomFilter(query) {
         const params = query.sort.split(",");
         sortFilter = params.map((param) => param.split("_"));
     }
+    console.log(customFilter);
     return customFilter; 
 }
 

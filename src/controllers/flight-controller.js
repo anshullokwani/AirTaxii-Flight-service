@@ -20,6 +20,7 @@ const { ErrorResponse, SuccessResponse } = require('../utils/common');
  */
 async function createFlight(req, res) {
     try {
+        console.log("start- fl-controller-create");
         const flight = await FlightService.createFlight({
             flightNumber: req.body.flightNumber,
             airplaneId: req.body.airplaneId,
@@ -32,9 +33,11 @@ async function createFlight(req, res) {
             totalSeats: req.body.totalSeats
         });
         SuccessResponse.data = flight;
+        console.log("end- fl-controller-create");
         return res.status(StatusCodes.CREATED)
         .json(SuccessResponse);
     } catch(error) {
+        console.log("error - fl-controller-create", error);
         ErrorResponse.error = error;
         return res.status(error.statusCode)
         .json(ErrorResponse)
