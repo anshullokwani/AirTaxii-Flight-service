@@ -13,13 +13,15 @@ router.post('/',
 router.get('/',
     FlightController.getAllFlights)
     
+
     
-/*
-
-
 // endpoint - '/api/v1/flight/:id' GET
 router.get('/:id',
-    FlightController.getAirport)
+    FlightController.getFlight)
+
+
+/*
+
 
 
 // endpoint - '/api/v1/flight/:id' DELETE

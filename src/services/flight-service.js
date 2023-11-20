@@ -42,6 +42,15 @@ async function getAllFlights(query) {
     }
 }
 
+async function getFlight(id) {
+    try {
+        const flight = await flightRepository.get(id);
+        return flight;
+    } catch(error) {
+        throw new AppError("cannot fetch data of flight", StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
 
 function getCustomFilter(query, sortFilter) {
     let customFilter = {};
@@ -81,5 +90,6 @@ function getCustomFilter(query, sortFilter) {
 
 module.exports = {
     createFlight,
-    getAllFlights
+    getAllFlights,
+    getFlight
 }
