@@ -11,13 +11,19 @@ router.post('/',
 
 // endpoint - '/api/v1/flight' GET
 router.get('/',
-    FlightController.getAllFlights)
+    FlightController.getAllFlights);
     
 
     
 // endpoint - '/api/v1/flight/:id' GET
 router.get('/:id',
-    FlightController.getFlight)
+    FlightController.getFlight);
+
+
+// endpoint - '/api/v1/flight/:id/seats' PATCH
+router.patch('/:id/seats',
+    FlightMiddleware.validateUpdateSeatsRequest,
+    FlightController.updateSeats);
 
 
 /*
